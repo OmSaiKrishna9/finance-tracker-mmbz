@@ -243,6 +243,72 @@ async def create_session(session_id: str = Header(..., alias="X-Session-ID"), re
         path="/"
     )
     
+
+
+# Admin - Users endpoints
+@app.get("/api/admin/users")
+async def get_all_users(request: Request):
+    await get_current_user(request)
+    
+    users = list(users_collection.find().sort("created_at", DESCENDING))
+    for user in users:
+        user["_id"] = str(user["_id"])
+    return users
+
+@app.post("/api/admin/users")
+async def create_user(user_data: dict, request: Request):
+    await get_current_user(request)
+    
+    # Check if user already exists
+    existing_user = users_collection.find_one({"email": user_data["email"]})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="User with this email already exists")
+    
+    user_id = str(uuid.uuid4())
+    user = {
+        "id": user_id,
+        "name": user_data["name"],
+        "email": user_data["email"],
+        "mobile": user_data.get("mobile", ""),
+        "role": user_data["role"],  # OWNER or EMPLOYEE
+        "picture": None,
+        "user_type": user_data["role"].lower(),
+        "created_at": datetime.now(timezone.utc)
+    }
+    
+    users_collection.insert_one(user)
+    return {"status": "success", "user_id": user_id, "message": "User created successfully"}
+
+@app.put("/api/admin/users/{user_id}")
+async def update_user(user_id: str, user_data: dict, request: Request):
+    await get_current_user(request)
+    
+    update_data = {
+        "name": user_data["name"],
+        "email": user_data["email"],
+        "mobile": user_data.get("mobile", ""),
+        "role": user_data["role"],
+        "user_type": user_data["role"].lower()
+    }
+    
+    result = users_collection.update_one({"id": user_id}, {"$set": update_data})
+    
+    if result.modified_count > 0:
+        return {"status": "success", "message": "User updated"}
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+@app.delete("/api/admin/users/{user_id}")
+async def delete_user(user_id: str, request: Request):
+    await get_current_user(request)
+    
+    result = users_collection.delete_one({"id": user_id})
+    
+    if result.deleted_count > 0:
+        return {"status": "success", "message": "User deleted"}
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
     return response
 
 @app.get("/api/auth/me")
