@@ -158,7 +158,7 @@ async def root():
 # Auth endpoints
 @app.get("/api/auth/google")
 async def google_login():
-    redirect_url = "http://localhost:3000/dashboard"
+    redirect_url = f"{APP_URL}/dashboard"
     auth_url = f"https://auth.emergentagent.com/?redirect={redirect_url}"
     return {"auth_url": auth_url}
 
