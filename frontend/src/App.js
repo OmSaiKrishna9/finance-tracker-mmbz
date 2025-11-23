@@ -163,7 +163,7 @@ function Dashboard({ user }) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className={`grid grid-cols-1 ${isEmployee ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
         <button
           onClick={() => navigate('/record-transaction')}
           className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6 hover:shadow-lg transition-all duration-200 text-left"
@@ -177,7 +177,7 @@ function Dashboard({ user }) {
             </div>
             <div>
               <h3 className="text-lg font-semibold">Record Transaction</h3>
-              <p className="text-blue-100 text-sm">Add sale, expense, or investment</p>
+              <p className="text-blue-100 text-sm">{isEmployee ? 'Add expense' : 'Add sale, expense, or investment'}</p>
             </div>
           </div>
         </button>
@@ -195,16 +195,17 @@ function Dashboard({ user }) {
             </div>
             <div>
               <h3 className="text-lg font-semibold">Transaction History</h3>
-              <p className="text-purple-100 text-sm">View all transactions</p>
+              <p className="text-purple-100 text-sm">{isEmployee ? 'View expenses' : 'View all transactions'}</p>
             </div>
           </div>
         </button>
 
-        <button
-          onClick={() => navigate('/reports')}
-          className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg p-6 hover:shadow-lg transition-all duration-200 text-left"
-          data-testid="reports-button"
-        >
+        {!isEmployee && (
+          <button
+            onClick={() => navigate('/reports')}
+            className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg p-6 hover:shadow-lg transition-all duration-200 text-left"
+            data-testid="reports-button"
+          >
           <div className="flex items-center gap-4">
             <div className="bg-white bg-opacity-20 rounded-full p-3">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
