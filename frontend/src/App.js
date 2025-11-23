@@ -862,8 +862,9 @@ function RecordTransaction({ user }) {
 }
 
 // Transaction History Page
-function TransactionHistory() {
-  const [activeTab, setActiveTab] = useState('sales');
+function TransactionHistory({ user }) {
+  const isEmployee = user?.role === 'EMPLOYEE';
+  const [activeTab, setActiveTab] = useState(isEmployee ? 'expenses' : 'sales');
   const [sales, setSales] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [investments, setInvestments] = useState([]);
