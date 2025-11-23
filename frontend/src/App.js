@@ -2008,6 +2008,12 @@ function AdminUserManagement() {
                   </select>
                 </div>
 
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mt-4">
+                  <p className="text-sm text-blue-700">
+                    ℹ️ <strong>Note:</strong> Users created here must authenticate using Google OAuth with their registered email address to access the system.
+                  </p>
+                </div>
+
                 <div className="flex gap-3 mt-6">
                   <button
                     type="submit"
