@@ -924,10 +924,6 @@ function TransactionHistory() {
     }));
   };
 
-      setLoading(false);
-    }
-  };
-
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
