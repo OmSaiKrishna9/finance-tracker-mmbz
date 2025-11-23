@@ -46,14 +46,31 @@ sessions_collection = db["user_sessions"]
 def init_partners():
     if partners_collection.count_documents({}) == 0:
         default_partners = [
-            {"id": str(uuid.uuid4()), "name": "Silar", "share_percentage": 75.0, "created_at": datetime.now(timezone.utc)},
-            {"id": str(uuid.uuid4()), "name": "Om", "share_percentage": 13.41, "created_at": datetime.now(timezone.utc)},
-            {"id": str(uuid.uuid4()), "name": "Anurag", "share_percentage": 6.09, "created_at": datetime.now(timezone.utc)},
-            {"id": str(uuid.uuid4()), "name": "RK", "share_percentage": 3.65, "created_at": datetime.now(timezone.utc)},
-            {"id": str(uuid.uuid4()), "name": "Vijay", "share_percentage": 1.82, "created_at": datetime.now(timezone.utc)},
+            {"id": str(uuid.uuid4()), "name": "Silar", "share_percentage": 75.0, "capital_invested": 6150000.0, "created_at": datetime.now(timezone.utc)},
+            {"id": str(uuid.uuid4()), "name": "Om", "share_percentage": 13.41, "capital_invested": 1100000.0, "created_at": datetime.now(timezone.utc)},
+            {"id": str(uuid.uuid4()), "name": "Anurag", "share_percentage": 6.10, "capital_invested": 500000.0, "created_at": datetime.now(timezone.utc)},
+            {"id": str(uuid.uuid4()), "name": "RK", "share_percentage": 3.66, "capital_invested": 300000.0, "created_at": datetime.now(timezone.utc)},
+            {"id": str(uuid.uuid4()), "name": "Vijay", "share_percentage": 1.83, "capital_invested": 150000.0, "created_at": datetime.now(timezone.utc)},
         ]
         partners_collection.insert_many(default_partners)
         print("✅ Default partners initialized")
+    else:
+        # Update existing partners with capital_invested if not present
+        for partner in partners_collection.find():
+            if "capital_invested" not in partner:
+                capital_map = {
+                    "Silar": 6150000.0,
+                    "Om": 1100000.0,
+                    "Anurag": 500000.0,
+                    "RK": 300000.0,
+                    "Vijay": 150000.0
+                }
+                capital = capital_map.get(partner["name"], 0.0)
+                partners_collection.update_one(
+                    {"id": partner["id"]},
+                    {"$set": {"capital_invested": capital}}
+                )
+        print("✅ Partners capital updated")
 
 init_partners()
 
