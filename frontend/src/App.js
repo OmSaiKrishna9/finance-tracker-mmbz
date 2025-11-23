@@ -194,6 +194,7 @@ function Dashboard({ user }) {
 // Record Transaction Page
 function RecordTransaction({ user }) {
   const [activeTab, setActiveTab] = useState('sale');
+  const [partnerPaymentSubTab, setPartnerPaymentSubTab] = useState('payback');
   const [users, setUsers] = useState([]);
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(false);
