@@ -240,7 +240,7 @@ async def create_session(session_id: str = Header(..., alias="X-Session-ID"), re
         if "role" not in user:
             users_collection.update_one(
                 {"id": user_id},
-                {"$set": {"role": "OWNER", "user_type": "owner"}}
+                {"$set": {"role": "EMPLOYEE", "user_type": "employee"}}
             )
     
     # Store session
