@@ -278,6 +278,36 @@ function RecordTransaction({ user }) {
     }
   };
 
+  const handlePartnerPaymentSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    const formData = new FormData(e.target);
+    const partnerId = formData.get('partner_id');
+    const partner = partners.find(p => p.id === partnerId);
+    
+    const data = {
+      date: formData.get('date'),
+      partner_id: partnerId,
+      partner_name: partner?.name || '',
+      amount_inr: parseFloat(formData.get('amount_inr')),
+      month_year: formData.get('month_year'),
+      payment_mode: formData.get('payment_mode'),
+      description: formData.get('description')
+    };
+
+    try {
+      await axios.post(`${BACKEND_URL}/api/partner-payments`, data, { withCredentials: true });
+      alert('Partner payment recorded successfully!');
+      e.target.reset();
+    } catch (error) {
+      console.error('Error recording partner payment:', error);
+      alert('Failed to record partner payment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleInvestmentSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
