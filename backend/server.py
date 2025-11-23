@@ -415,7 +415,28 @@ async def create_investment(investment_data: dict, request: Request):
     }
     
     investments_collection.insert_one(investment)
-    return {"status": "success", "message": "Investment recorded. Please update partner shares manually."}
+    
+    # Update partner's capital invested
+    partner = partners_collection.find_one({"id": investment_data["partner_id"]})
+    if partner:
+        # Existing partner - add to their capital
+        current_capital = partner.get("capital_invested", 0.0)
+        new_capital = current_capital + investment_data["amount_inr"]
+        partners_collection.update_one(
+            {"id": investment_data["partner_id"]},
+            {"$set": {"capital_invested": new_capital}}
+        )
+    else:
+        # New partner - create entry with 0% share (to be updated manually)
+        partners_collection.insert_one({
+            "id": investment_data["partner_id"],
+            "name": investment_data["partner_name"],
+            "share_percentage": 0.0,
+            "capital_invested": investment_data["amount_inr"],
+            "created_at": datetime.now(timezone.utc)
+        })
+    
+    return {"status": "success", "message": "Investment recorded and capital updated. Please update partner shares in Partners section."}
 
 @app.get("/api/investments")
 async def get_investments(request: Request):
