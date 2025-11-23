@@ -416,23 +416,6 @@ async def update_expense(expense_id: str, expense_data: dict, request: Request):
     else:
         raise HTTPException(status_code=404, detail="Expense not found")
 
-        "paid_by": expense_data["paid_by"],
-        "payment_mode": expense_data["payment_mode"],
-        "created_at": datetime.now(timezone.utc)
-    }
-    
-    expenses_collection.insert_one(expense)
-    return {"status": "success"}
-
-@app.get("/api/expenses")
-async def get_expenses(request: Request):
-    await get_current_user(request)
-    
-    expenses = list(expenses_collection.find().sort("date", DESCENDING))
-    for expense in expenses:
-        expense["_id"] = str(expense["_id"])
-    return expenses
-
 # Partner Payments endpoints
 
 
