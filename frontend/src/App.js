@@ -878,6 +878,50 @@ function TransactionHistory() {
     } catch (error) {
       console.error('Error fetching transactions:', error);
     } finally {
+
+
+  const handleEdit = (item, type) => {
+    setEditingItem(item);
+    setEditType(type);
+  };
+
+  const handleSaveEdit = async () => {
+    setLoading(true);
+    try {
+      let endpoint = '';
+      if (editType === 'sale') {
+        endpoint = `${BACKEND_URL}/api/sales/${editingItem.id}`;
+      } else if (editType === 'expense') {
+        endpoint = `${BACKEND_URL}/api/expenses/${editingItem.id}`;
+      } else if (editType === 'investment') {
+        endpoint = `${BACKEND_URL}/api/investments/${editingItem.id}`;
+      }
+
+      await axios.put(endpoint, editingItem, { withCredentials: true });
+      setToast({ message: 'Updated Successfully!', type: 'success' });
+      setEditingItem(null);
+      setEditType(null);
+      fetchAllTransactions();
+    } catch (error) {
+      console.error('Error updating:', error);
+      setToast({ message: 'Failed to update', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingItem(null);
+    setEditType(null);
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditingItem(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
       setLoading(false);
     }
   };
