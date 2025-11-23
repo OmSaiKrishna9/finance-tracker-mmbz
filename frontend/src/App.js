@@ -2207,7 +2207,7 @@ function App() {
             } />
             <Route path="/history" element={
               <AppLayout user={user} onLogout={handleLogout}>
-                <TransactionHistory />
+                <TransactionHistory user={user} />
               </AppLayout>
             } />
             <Route path="/reports" element={
