@@ -1406,6 +1406,11 @@ function PartnersManagement() {
   const [editMode, setEditMode] = useState(false);
   const [shares, setShares] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showNewPartnerModal, setShowNewPartnerModal] = useState(false);
+  const [newPartnerName, setNewPartnerName] = useState('');
+  const [newPartnerCapital, setNewPartnerCapital] = useState('');
+  const [newPartnerShare, setNewPartnerShare] = useState('');
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     fetchPartners();
