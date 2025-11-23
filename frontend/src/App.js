@@ -136,28 +136,32 @@ function Dashboard({ user }) {
     );
   }
 
+  const isEmployee = user?.role === 'EMPLOYEE';
+
   return (
     <div className="space-y-6" data-testid="dashboard">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Last Month Overview</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-500" data-testid="revenue-card">
-            <p className="text-green-600 text-sm font-medium mb-2">Revenue</p>
-            <p className="text-3xl font-bold text-green-700">{formatCurrency(stats?.revenue || 0)}</p>
-          </div>
+      {!isEmployee && (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Last Month Overview</h2>
           
-          <div className="bg-red-50 rounded-lg p-6 border-l-4 border-red-500" data-testid="expenses-card">
-            <p className="text-red-600 text-sm font-medium mb-2">Expenses</p>
-            <p className="text-3xl font-bold text-red-700">{formatCurrency(stats?.expenses || 0)}</p>
-          </div>
-          
-          <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500" data-testid="profit-card">
-            <p className="text-blue-600 text-sm font-medium mb-2">Profit</p>
-            <p className="text-3xl font-bold text-blue-700">{formatCurrency(stats?.profit || 0)}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-500" data-testid="revenue-card">
+              <p className="text-green-600 text-sm font-medium mb-2">Revenue</p>
+              <p className="text-3xl font-bold text-green-700">{formatCurrency(stats?.revenue || 0)}</p>
+            </div>
+            
+            <div className="bg-red-50 rounded-lg p-6 border-l-4 border-red-500" data-testid="expenses-card">
+              <p className="text-red-600 text-sm font-medium mb-2">Expenses</p>
+              <p className="text-3xl font-bold text-red-700">{formatCurrency(stats?.expenses || 0)}</p>
+            </div>
+            
+            <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500" data-testid="profit-card">
+              <p className="text-blue-600 text-sm font-medium mb-2">Profit</p>
+              <p className="text-3xl font-bold text-blue-700">{formatCurrency(stats?.profit || 0)}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button
