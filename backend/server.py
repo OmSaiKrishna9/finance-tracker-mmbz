@@ -80,6 +80,7 @@ class User(BaseModel):
     email: str
     name: str
     picture: Optional[str] = None
+    role: str = "EMPLOYEE"
     user_type: Optional[str] = "employee"
     created_at: datetime
 
