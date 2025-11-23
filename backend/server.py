@@ -180,15 +180,11 @@ async def api_root():
 # Auth endpoints
 @app.get("/api/auth/google")
 async def google_login(request: Request):
-    # Get the origin from the request to determine correct redirect
-    origin = request.headers.get("origin", APP_URL)
-    # Ensure we use https
-    if "preview.emergentagent.com" in origin:
-        redirect_url = f"{origin}/dashboard"
-    else:
-        redirect_url = f"{APP_URL}/dashboard"
-    
+    # Always use APP_URL for consistent redirect
+    redirect_url = f"{APP_URL}/dashboard"
     auth_url = f"https://auth.emergentagent.com/?redirect={redirect_url}"
+    print(f"🔐 OAuth redirect URL: {redirect_url}")
+    print(f"🔐 Auth URL: {auth_url}")
     return {"auth_url": auth_url}
 
 @app.post("/api/auth/session")
