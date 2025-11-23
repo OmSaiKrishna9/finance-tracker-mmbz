@@ -820,6 +820,13 @@ function RecordTransaction({ user }) {
                     <select
                       name="partner_id"
                       required
+                      onChange={(e) => {
+                        if (e.target.value === 'new_partner') {
+                          document.getElementById('new-partner-name-field').style.display = 'block';
+                        } else {
+                          document.getElementById('new-partner-name-field').style.display = 'none';
+                        }
+                      }}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       data-testid="investment-partner"
                     >
@@ -827,7 +834,18 @@ function RecordTransaction({ user }) {
                       {partners.map(p => (
                         <option key={p.id} value={p.id}>{p.name}</option>
                       ))}
+                      <option value="new_partner">➕ New Partner</option>
                     </select>
+                  </div>
+                  <div id="new-partner-name-field" style={{display: 'none'}}>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">New Partner Name *</label>
+                    <input
+                      type="text"
+                      name="new_partner_name"
+                      placeholder="Enter partner name"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="new-partner-name"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Amount (INR) *</label>
