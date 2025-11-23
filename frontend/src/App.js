@@ -1034,6 +1034,7 @@ function TransactionHistory() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid By</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -1044,6 +1045,14 @@ function TransactionHistory() {
                     <td className="px-6 py-4 text-sm text-gray-500">{expense.description || '-'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600">{formatCurrency(expense.amount_inr)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{expense.paid_by}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <button
+                        onClick={() => handleEdit(expense, 'expense')}
+                        className="text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        Edit
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
