@@ -225,6 +225,9 @@ function RecordTransaction({ user }) {
   const [users, setUsers] = useState([]);
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [showNewPartnerModal, setShowNewPartnerModal] = useState(false);
+  const [newPartnerName, setNewPartnerName] = useState('');
 
   useEffect(() => {
     fetchUsers();
