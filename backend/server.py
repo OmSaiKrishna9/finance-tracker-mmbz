@@ -208,19 +208,39 @@ async def create_session(session_id: str = Header(..., alias="X-Session-ID"), re
     user = users_collection.find_one({"email": data["email"]})
     
     if not user:
-        # Create new user
-        user_id = str(uuid.uuid4())
-        user_doc = {
-            "id": user_id,
-            "email": data["email"],
-            "name": data["name"],
-            "picture": data.get("picture"),
-            "user_type": "employee",
-            "created_at": datetime.now(timezone.utc)
-        }
-        users_collection.insert_one(user_doc)
+        # Create new user - check if it exists in admin-created users
+        admin_user = users_collection.find_one({"email": data["email"]})
+        if admin_user:
+            # User was created via admin, just update with OAuth data
+            user_id = admin_user["id"]
+            users_collection.update_one(
+                {"id": user_id},
+                {"$set": {
+                    "name": data["name"],
+                    "picture": data.get("picture")
+                }}
+            )
+        else:
+            # New user via OAuth - default to OWNER role
+            user_id = str(uuid.uuid4())
+            user_doc = {
+                "id": user_id,
+                "email": data["email"],
+                "name": data["name"],
+                "picture": data.get("picture"),
+                "role": "OWNER",
+                "user_type": "owner",
+                "created_at": datetime.now(timezone.utc)
+            }
+            users_collection.insert_one(user_doc)
     else:
         user_id = user["id"]
+        # Ensure existing users have a role
+        if "role" not in user:
+            users_collection.update_one(
+                {"id": user_id},
+                {"$set": {"role": "OWNER", "user_type": "owner"}}
+            )
     
     # Store session
     session_token = data["session_token"]
