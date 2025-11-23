@@ -488,6 +488,129 @@ async def get_monthly_report(request: Request, month: str):
         "expenses_count": len(expenses)
     }
 
+@app.get("/api/reports/yearly")
+async def get_yearly_report(request: Request, year: int, month: Optional[int] = None):
+    await get_current_user(request)
+    
+    # Get partners
+    partners = list(partners_collection.find())
+    
+    if month:
+        # Single month report
+        month_str = f"{year}-{str(month).zfill(2)}"
+        start_date = f"{year}-{str(month).zfill(2)}-01"
+        
+        if month == 12:
+            end_date = f"{year+1}-01-01"
+        else:
+            end_date = f"{year}-{str(month+1).zfill(2)}-01"
+        
+        # Get sales and expenses for the month
+        sales = list(sales_collection.find({"date": {"$gte": start_date, "$lt": end_date}}))
+        expenses = list(expenses_collection.find({"date": {"$gte": start_date, "$lt": end_date}}))
+        
+        total_revenue = sum(sale["total_amount_inr"] for sale in sales)
+        total_expenses = sum(expense["amount_inr"] for expense in expenses)
+        profit = total_revenue - total_expenses
+        
+        monthly_data = [{
+            "month": month_str,
+            "revenue": total_revenue,
+            "expenses": total_expenses,
+            "profit": profit
+        }]
+        
+        # Get partner payments for the specific month
+        partner_summary = []
+        for partner in partners:
+            # Calculate total share for the month
+            total_share = profit * (partner["share_percentage"] / 100)
+            
+            # Get total paid to this partner in the month
+            payments = list(partner_payments_collection.find({
+                "partner_id": partner["id"],
+                "date": {"$gte": start_date, "$lt": end_date}
+            }))
+            total_paid = sum(payment["amount_inr"] for payment in payments)
+            
+            # Calculate due
+            total_due = total_share - total_paid
+            
+            partner_summary.append({
+                "partner_name": partner["name"],
+                "total_share": total_share,
+                "total_paid": total_paid,
+                "total_due": total_due
+            })
+        
+    else:
+        # Full year report - all 12 months
+        monthly_data = []
+        
+        for m in range(1, 13):
+            start_date = f"{year}-{str(m).zfill(2)}-01"
+            if m == 12:
+                end_date = f"{year+1}-01-01"
+            else:
+                end_date = f"{year}-{str(m+1).zfill(2)}-01"
+            
+            # Get sales and expenses for each month
+            sales = list(sales_collection.find({"date": {"$gte": start_date, "$lt": end_date}}))
+            expenses = list(expenses_collection.find({"date": {"$gte": start_date, "$lt": end_date}}))
+            
+            total_revenue = sum(sale["total_amount_inr"] for sale in sales)
+            total_expenses = sum(expense["amount_inr"] for expense in expenses)
+            profit = total_revenue - total_expenses
+            
+            monthly_data.append({
+                "month": f"{year}-{str(m).zfill(2)}",
+                "revenue": total_revenue,
+                "expenses": total_expenses,
+                "profit": profit
+            })
+        
+        # Get partner summary for the entire year
+        partner_summary = []
+        year_start = f"{year}-01-01"
+        year_end = f"{year+1}-01-01"
+        
+        # Calculate total profit for the year
+        all_sales = list(sales_collection.find({"date": {"$gte": year_start, "$lt": year_end}}))
+        all_expenses = list(expenses_collection.find({"date": {"$gte": year_start, "$lt": year_end}}))
+        
+        yearly_revenue = sum(sale["total_amount_inr"] for sale in all_sales)
+        yearly_expenses = sum(expense["amount_inr"] for expense in all_expenses)
+        yearly_profit = yearly_revenue - yearly_expenses
+        
+        for partner in partners:
+            # Calculate total share for the year
+            total_share = yearly_profit * (partner["share_percentage"] / 100)
+            
+            # Get total paid to this partner in the year
+            payments = list(partner_payments_collection.find({
+                "partner_id": partner["id"],
+                "date": {"$gte": year_start, "$lt": year_end}
+            }))
+            total_paid = sum(payment["amount_inr"] for payment in payments)
+            
+            # Calculate due
+            total_due = total_share - total_paid
+            
+            partner_summary.append({
+                "partner_name": partner["name"],
+                "total_share": total_share,
+                "total_paid": total_paid,
+                "total_due": total_due
+            })
+    
+    return {
+        "year": year,
+        "month": month,
+        "monthly_data": monthly_data,
+        "partner_summary": partner_summary
+    }
+
+
 # Users endpoint
 @app.get("/api/users")
 async def get_users(request: Request):
