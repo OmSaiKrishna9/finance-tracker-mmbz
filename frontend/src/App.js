@@ -285,7 +285,7 @@ function RecordTransaction({ user }) {
     }
   };
 
-  const handleExpenseSubmit = async (e) => {
+  const handleExpenseSubmit = async (e, addNext = false) => {
     e.preventDefault();
     setLoading(true);
     
@@ -301,11 +301,11 @@ function RecordTransaction({ user }) {
 
     try {
       await axios.post(`${BACKEND_URL}/api/expenses`, data, { withCredentials: true });
-      alert('Expense recorded successfully!');
+      setToast({ message: 'Expense Added Successfully!', type: 'success' });
       e.target.reset();
     } catch (error) {
       console.error('Error recording expense:', error);
-      alert('Failed to record expense');
+      setToast({ message: 'Failed to record expense', type: 'error' });
     } finally {
       setLoading(false);
     }
