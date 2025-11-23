@@ -1519,13 +1519,22 @@ function PartnersManagement() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Partners Management</h2>
           {!editMode ? (
-            <button
-              onClick={() => setEditMode(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200"
-              data-testid="edit-shares-button"
-            >
-              Edit Shares
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowNewPartnerModal(true)}
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200 flex items-center gap-2"
+                data-testid="add-partner-button"
+              >
+                <span className="text-xl">+</span> New Partner
+              </button>
+              <button
+                onClick={() => setEditMode(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200"
+                data-testid="edit-shares-button"
+              >
+                Edit Shares
+              </button>
+            </div>
           ) : (
             <div className="flex gap-2">
               <button
