@@ -2035,6 +2035,7 @@ function AppLayout({ user, onLogout, children }) {
     { name: 'History', path: '/history', icon: '📝' },
     { name: 'Reports', path: '/reports', icon: '📈' },
     { name: 'Partners', path: '/partners', icon: '👥' },
+    { name: 'Admin', path: '/admin', icon: '⚙️' },
   ];
 
   return (
