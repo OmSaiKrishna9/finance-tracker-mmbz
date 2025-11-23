@@ -3,7 +3,7 @@
     "test": "Health Check",
     "success": true,
     "details": "API is running correctly",
-    "timestamp": "2025-11-23T14:24:28.368746",
+    "timestamp": "2025-11-23T14:24:54.739627",
     "response": {
       "message": "Finance Tracker API",
       "status": "running",
@@ -12,9 +12,9 @@
   },
   {
     "test": "Google Auth URL",
-    "success": false,
-    "details": "Invalid auth URL format",
-    "timestamp": "2025-11-23T14:24:28.378879",
+    "success": true,
+    "details": "Valid auth URL returned",
+    "timestamp": "2025-11-23T14:24:54.749154",
     "response": {
       "auth_url": "https://auth.emergentagent.com/?redirect=https://57f0d7b9-60a6-4841-8f64-72b3f826be5a.preview.emergentagent.com/dashboard"
     }
@@ -23,7 +23,7 @@
     "test": "Auth Me (Unauthenticated)",
     "success": true,
     "details": "Correctly returns 401 with proper error",
-    "timestamp": "2025-11-23T14:24:28.427225",
+    "timestamp": "2025-11-23T14:24:54.758189",
     "response": {
       "detail": "Not authenticated"
     }
@@ -32,19 +32,19 @@
     "test": "Dashboard Stats (Unauthenticated)",
     "success": true,
     "details": "Correctly requires authentication",
-    "timestamp": "2025-11-23T14:24:28.434082"
+    "timestamp": "2025-11-23T14:24:54.768980"
   },
   {
     "test": "Partners (Unauthenticated)",
     "success": true,
     "details": "Correctly requires authentication",
-    "timestamp": "2025-11-23T14:24:28.481351"
+    "timestamp": "2025-11-23T14:24:54.818646"
   },
   {
     "test": "CORS Headers",
     "success": true,
     "details": "CORS headers present for preview domain",
-    "timestamp": "2025-11-23T14:24:28.539272",
+    "timestamp": "2025-11-23T14:24:54.834544",
     "response": {
       "Access-Control-Allow-Origin": "https://photo-tracker-16.preview.emergentagent.com",
       "Access-Control-Allow-Credentials": "true"
@@ -54,6 +54,6 @@
     "test": "User Model Validation",
     "success": true,
     "details": "No validation errors - clean 401 response (role field fix working)",
-    "timestamp": "2025-11-23T14:24:28.547138"
+    "timestamp": "2025-11-23T14:24:54.882700"
   }
 ]
