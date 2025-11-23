@@ -485,25 +485,6 @@ async def create_investment(investment_data: dict, request: Request):
     
     # Update partner's capital invested
     partner = partners_collection.find_one({"id": investment_data["partner_id"]})
-
-
-@app.put("/api/investments/{investment_id}")
-async def update_investment(investment_id: str, investment_data: dict, request: Request):
-    await get_current_user(request)
-    
-    update_data = {
-        "date": investment_data["date"],
-        "amount_inr": investment_data["amount_inr"],
-        "description": investment_data.get("description"),
-    }
-    
-    result = investments_collection.update_one({"id": investment_id}, {"$set": update_data})
-    
-    if result.modified_count > 0:
-        return {"status": "success", "message": "Investment updated"}
-    else:
-        raise HTTPException(status_code=404, detail="Investment not found")
-
     if partner:
         # Existing partner - add to their capital
         current_capital = partner.get("capital_invested", 0.0)
