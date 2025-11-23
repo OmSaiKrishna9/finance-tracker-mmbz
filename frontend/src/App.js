@@ -590,66 +590,177 @@ function RecordTransaction({ user }) {
           </form>
         )}
 
-        {activeTab === 'investment' && (
-          <form onSubmit={handleInvestmentSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
-                <input
-                  type="date"
-                  name="date"
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  data-testid="investment-date"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Partner *</label>
-                <select
-                  name="partner_id"
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  data-testid="investment-partner"
+        {activeTab === 'partner-payment' && (
+          <div className="space-y-4">
+            {/* Sub-tabs for Pay-Backs and Investments */}
+            <div className="flex gap-2 border-b">
+              <button
+                onClick={() => setPartnerPaymentSubTab('payback')}
+                className={`px-4 py-2 font-medium transition-colors ${
+                  partnerPaymentSubTab === 'payback'
+                    ? 'text-blue-600 border-b-2 border-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Record Pay-Backs
+              </button>
+              <button
+                onClick={() => setPartnerPaymentSubTab('investment')}
+                className={`px-4 py-2 font-medium transition-colors ${
+                  partnerPaymentSubTab === 'investment'
+                    ? 'text-blue-600 border-b-2 border-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Record Investments
+              </button>
+            </div>
+
+            {/* Pay-Back Form */}
+            {partnerPaymentSubTab === 'payback' && (
+              <form onSubmit={handlePartnerPaymentSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+                    <input
+                      type="date"
+                      name="date"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="payback-date"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Partner *</label>
+                    <select
+                      name="partner_id"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="payback-partner"
+                    >
+                      <option value="">Select partner</option>
+                      {partners.map(p => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Amount (INR) *</label>
+                    <input
+                      type="number"
+                      name="amount_inr"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="payback-amount"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Month-Year *</label>
+                    <input
+                      type="month"
+                      name="month_year"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="payback-month"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Payment Mode *</label>
+                    <select
+                      name="payment_mode"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="payback-payment-mode"
+                    >
+                      <option value="">Select mode</option>
+                      <option value="Cash">Cash</option>
+                      <option value="UPI">UPI</option>
+                      <option value="Online">Online</option>
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea
+                      name="description"
+                      rows="3"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    ></textarea>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50"
+                  data-testid="payback-submit-button"
                 >
-                  <option value="">Select partner</option>
-                  {partners.map(p => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Amount (INR) *</label>
-                <input
-                  type="number"
-                  name="amount_inr"
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  data-testid="investment-amount"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  name="description"
-                  rows="3"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                ></textarea>
-              </div>
-            </div>
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-              <p className="text-sm text-yellow-700">
-                ⚠️ After recording investment, please update partner shares in the Partners section.
-              </p>
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50"
-              data-testid="investment-submit-button"
-            >
-              {loading ? 'Recording...' : 'Record Investment'}
-            </button>
-          </form>
+                  {loading ? 'Recording...' : 'Record Pay-Back'}
+                </button>
+              </form>
+            )}
+
+            {/* Investment Form */}
+            {partnerPaymentSubTab === 'investment' && (
+              <form onSubmit={handleInvestmentSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+                    <input
+                      type="date"
+                      name="date"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="investment-date"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Partner *</label>
+                    <select
+                      name="partner_id"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="investment-partner"
+                    >
+                      <option value="">Select partner</option>
+                      {partners.map(p => (
+                        <option key={p.id} value={p.id}>{p.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Amount (INR) *</label>
+                    <input
+                      type="number"
+                      name="amount_inr"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      data-testid="investment-amount"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea
+                      name="description"
+                      rows="3"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                  <p className="text-sm text-yellow-700">
+                    ⚠️ After recording investment, please update partner shares in the Partners section.
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50"
+                  data-testid="investment-submit-button"
+                >
+                  {loading ? 'Recording...' : 'Record Investment'}
+                </button>
+              </form>
+            )}
+          </div>
         )}
       </div>
     </div>
