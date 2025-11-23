@@ -2130,11 +2130,17 @@ function App() {
   const checkAuth = async () => {
     // Check for session_id in URL fragment
     const hash = window.location.hash;
+    console.log('🔍 CheckAuth - Full URL:', window.location.href);
+    console.log('🔍 CheckAuth - Hash:', hash);
+    console.log('🔍 CheckAuth - Contains session_id?', hash.includes('session_id='));
+    
     if (hash && hash.includes('session_id=')) {
       setProcessingSession(true);
       const sessionId = hash.split('session_id=')[1].split('&')[0];
+      console.log('✅ Session ID found:', sessionId);
       
       try {
+        console.log('📤 Calling POST /api/auth/session with session ID');
         await axios.post(
           `${BACKEND_URL}/api/auth/session`,
           {},
@@ -2143,26 +2149,33 @@ function App() {
             withCredentials: true
           }
         );
+        console.log('✅ Session created successfully');
         
         // Clear hash
         window.history.replaceState(null, '', window.location.pathname);
         
         // Fetch user
+        console.log('📤 Fetching user data from /api/auth/me');
         const userRes = await axios.get(`${BACKEND_URL}/api/auth/me`, { withCredentials: true });
+        console.log('✅ User data received:', userRes.data);
         setUser(userRes.data);
       } catch (error) {
-        console.error('Session creation error:', error);
+        console.error('❌ Session creation error:', error);
+        console.error('❌ Error response:', error.response?.data);
+        alert(`Login failed: ${error.response?.data?.detail || error.message}`);
       } finally {
         setProcessingSession(false);
         setLoading(false);
       }
     } else {
+      console.log('⚠️ No session_id in hash, checking existing session');
       // Check existing session
       try {
         const response = await axios.get(`${BACKEND_URL}/api/auth/me`, { withCredentials: true });
+        console.log('✅ Existing session found');
         setUser(response.data);
       } catch (error) {
-        console.log('Not authenticated');
+        console.log('ℹ️ Not authenticated');
       } finally {
         setLoading(false);
       }
