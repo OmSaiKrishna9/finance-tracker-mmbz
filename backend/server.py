@@ -379,6 +379,28 @@ async def create_expense(expense_data: dict, request: Request):
         "expense_type": expense_data["expense_type"],
         "amount_inr": expense_data["amount_inr"],
         "description": expense_data.get("description"),
+
+
+@app.put("/api/expenses/{expense_id}")
+async def update_expense(expense_id: str, expense_data: dict, request: Request):
+    await get_current_user(request)
+    
+    update_data = {
+        "date": expense_data["date"],
+        "expense_type": expense_data["expense_type"],
+        "amount_inr": expense_data["amount_inr"],
+        "description": expense_data.get("description"),
+        "paid_by": expense_data["paid_by"],
+        "payment_mode": expense_data["payment_mode"],
+    }
+    
+    result = expenses_collection.update_one({"id": expense_id}, {"$set": update_data})
+    
+    if result.modified_count > 0:
+        return {"status": "success", "message": "Expense updated"}
+    else:
+        raise HTTPException(status_code=404, detail="Expense not found")
+
         "paid_by": expense_data["paid_by"],
         "payment_mode": expense_data["payment_mode"],
         "created_at": datetime.now(timezone.utc)
