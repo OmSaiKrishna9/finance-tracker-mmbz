@@ -12,11 +12,25 @@ function LoginPage() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/auth/google`);
-      window.location.href = response.data.auth_url;
+      console.log('Attempting to fetch auth URL from:', `${BACKEND_URL}/api/auth/google`);
+      const response = await axios.get(`${BACKEND_URL}/api/auth/google`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('Auth URL received:', response.data.auth_url);
+      
+      if (response.data && response.data.auth_url) {
+        console.log('Redirecting to:', response.data.auth_url);
+        window.location.href = response.data.auth_url;
+      } else {
+        throw new Error('No auth URL received from server');
+      }
     } catch (error) {
-      console.error('Login error:', error);
-      alert('Failed to initiate login');
+      console.error('Login error details:', error);
+      console.error('Error response:', error.response);
+      console.error('Error message:', error.message);
+      alert(`Failed to initiate login: ${error.message || 'Unknown error'}. Please check console for details.`);
       setLoading(false);
     }
   };
