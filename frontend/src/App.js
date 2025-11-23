@@ -958,17 +958,19 @@ function TransactionHistory({ user }) {
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Transaction History</h2>
         
         <div className="flex gap-2 mb-6 border-b">
-          <button
-            onClick={() => setActiveTab('sales')}
-            className={`px-6 py-3 font-medium transition-colors ${
-              activeTab === 'sales'
-                ? 'text-blue-600 border-b-2 border-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-            data-testid="sales-history-tab"
-          >
-            Sales ({sales.length})
-          </button>
+          {!isEmployee && (
+            <button
+              onClick={() => setActiveTab('sales')}
+              className={`px-6 py-3 font-medium transition-colors ${
+                activeTab === 'sales'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              data-testid="sales-history-tab"
+            >
+              Sales ({sales.length})
+            </button>
+          )}
           <button
             onClick={() => setActiveTab('expenses')}
             className={`px-6 py-3 font-medium transition-colors ${
@@ -980,17 +982,19 @@ function TransactionHistory({ user }) {
           >
             Expenses ({expenses.length})
           </button>
-          <button
-            onClick={() => setActiveTab('investments')}
-            className={`px-6 py-3 font-medium transition-colors ${
-              activeTab === 'investments'
-                ? 'text-blue-600 border-b-2 border-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-            data-testid="investments-history-tab"
-          >
-            Investments ({investments.length})
-          </button>
+          {!isEmployee && (
+            <button
+              onClick={() => setActiveTab('investments')}
+              className={`px-6 py-3 font-medium transition-colors ${
+                activeTab === 'investments'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              data-testid="investments-history-tab"
+            >
+              Investments ({investments.length})
+            </button>
+          )}
         </div>
 
         {activeTab === 'sales' && (
