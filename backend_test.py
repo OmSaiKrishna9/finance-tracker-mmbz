@@ -71,7 +71,7 @@ class AuthenticationTester:
                 if "auth_url" in data:
                     auth_url = data["auth_url"]
                     if (auth_url.startswith("https://auth.emergentagent.com/?redirect=") and
-                        "photo-tracker-16.preview.emergentagent.com" in auth_url):
+                        ".preview.emergentagent.com/dashboard" in auth_url):
                         self.log_test("Google Auth URL", True, "Valid auth URL returned", data)
                     else:
                         self.log_test("Google Auth URL", False, "Invalid auth URL format", data)
