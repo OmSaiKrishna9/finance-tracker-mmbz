@@ -222,15 +222,15 @@ async def create_session(session_id: str = Header(..., alias="X-Session-ID"), re
                 }}
             )
         else:
-            # New user via OAuth - default to OWNER role
+            # New user via OAuth - default to EMPLOYEE role
             user_id = str(uuid.uuid4())
             user_doc = {
                 "id": user_id,
                 "email": data["email"],
                 "name": data["name"],
                 "picture": data.get("picture"),
-                "role": "OWNER",
-                "user_type": "owner",
+                "role": "EMPLOYEE",
+                "user_type": "employee",
                 "created_at": datetime.now(timezone.utc)
             }
             users_collection.insert_one(user_doc)
