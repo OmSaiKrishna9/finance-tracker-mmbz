@@ -1066,18 +1066,23 @@ function Reports() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expenses</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expense %</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {report.monthly_data.map((data, idx) => (
-                      <tr key={idx} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{getMonthName(data.month)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">{formatCurrency(data.revenue)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">{formatCurrency(data.expenses)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-semibold">{formatCurrency(data.profit)}</td>
-                      </tr>
-                    ))}
+                    {report.monthly_data.map((data, idx) => {
+                      const expensePercent = data.revenue > 0 ? ((data.expenses / data.revenue) * 100).toFixed(2) : 0;
+                      return (
+                        <tr key={idx} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{getMonthName(data.month)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">{formatCurrency(data.revenue)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">{formatCurrency(data.expenses)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-orange-600 font-semibold">{expensePercent}%</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-semibold">{formatCurrency(data.profit)}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
