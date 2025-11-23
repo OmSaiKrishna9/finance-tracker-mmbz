@@ -618,7 +618,7 @@ function RecordTransaction({ user }) {
 
             {/* Pay-Back Form */}
             {partnerPaymentSubTab === 'payback' && (
-              <form onSubmit={handlePartnerPaymentSubmit} className="space-y-4">
+              <form onSubmit={handlePartnerPaymentSubmit} className="space-y-4" id="payback-form">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
@@ -626,6 +626,17 @@ function RecordTransaction({ user }) {
                       type="date"
                       name="date"
                       required
+                      onChange={(e) => {
+                        // Auto-populate month-year from date
+                        const date = e.target.value;
+                        if (date) {
+                          const monthYear = date.substring(0, 7); // Extract YYYY-MM
+                          const monthYearInput = document.querySelector('input[name="month_year"]');
+                          if (monthYearInput) {
+                            monthYearInput.value = monthYear;
+                          }
+                        }
+                      }}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       data-testid="payback-date"
                     />
@@ -660,8 +671,9 @@ function RecordTransaction({ user }) {
                       type="month"
                       name="month_year"
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                       data-testid="payback-month"
+                      readOnly
                     />
                   </div>
                   <div>
