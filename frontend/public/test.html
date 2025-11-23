@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            background: #3B82F6;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+        }
+        button:hover {
+            background: #2563EB;
+        }
+        #log {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            min-height: 200px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Finance Tracker - Login Test</h1>
+    <p>This is a simple test page to verify the login functionality.</p>
+    
+    <button onclick="testLogin()">Test Login (Redirect to Google)</button>
+    <button onclick="testAPI()">Test API Connection</button>
+    <button onclick="clearLog()">Clear Log</button>
+    
+    <div id="log"></div>
+
+    <script>
+        const BACKEND_URL = 'https://57f0d7b9-60a6-4841-8f64-72b3f826be5a.preview.emergentagent.com';
+        
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+        
+        async function testAPI() {
+            log('Testing API connection...', 'info');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/google`);
+                const data = await response.json();
+                log(`✅ API Response: ${JSON.stringify(data)}`, 'success');
+                log(`Auth URL: ${data.auth_url}`, 'info');
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+        
+        async function testLogin() {
+            log('Fetching auth URL...', 'info');
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/google`);
+                const data = await response.json();
+                
+                if (data && data.auth_url) {
+                    log(`✅ Got auth URL: ${data.auth_url}`, 'success');
+                    log('Redirecting in 2 seconds...', 'info');
+                    
+                    setTimeout(() => {
+                        log('Redirecting now!', 'success');
+                        window.location.href = data.auth_url;
+                    }, 2000);
+                } else {
+                    log('❌ No auth URL in response', 'error');
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        }
+        
+        // Run initial test on page load
+        log('Page loaded. Click "Test API Connection" to verify backend is accessible.', 'info');
+    </script>
+</body>
+</html>
