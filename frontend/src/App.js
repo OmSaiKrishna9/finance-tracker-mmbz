@@ -1463,6 +1463,54 @@ function PartnersManagement() {
     }));
   };
 
+
+  const handleAddNewPartner = async () => {
+    if (!newPartnerName || !newPartnerCapital || !newPartnerShare) {
+      setToast({ message: 'Please fill all fields', type: 'error' });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Create partner via investment endpoint
+      const partnerId = `partner_${Date.now()}`;
+      await axios.post(`${BACKEND_URL}/api/investments`, {
+        date: new Date().toISOString().split('T')[0],
+        partner_id: partnerId,
+        partner_name: newPartnerName,
+        amount_inr: parseFloat(newPartnerCapital),
+        description: 'Initial investment'
+      }, { withCredentials: true });
+
+      // Update shares including the new partner
+      const newShares = [...Object.keys(shares).map(pid => ({
+        partner_id: pid,
+        share_percentage: parseFloat(shares[pid])
+      })), {
+        partner_id: partnerId,
+        share_percentage: parseFloat(newPartnerShare)
+      }];
+
+      await axios.put(`${BACKEND_URL}/api/partners/shares`, 
+        { shares: newShares },
+        { withCredentials: true }
+      );
+
+      setToast({ message: 'New Partner Added Successfully!', type: 'success' });
+      setShowNewPartnerModal(false);
+      setNewPartnerName('');
+      setNewPartnerCapital('');
+      setNewPartnerShare('');
+      fetchPartners();
+    } catch (error) {
+      console.error('Error adding partner:', error);
+      setToast({ message: error.response?.data?.detail || 'Failed to add partner', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const totalShares = Object.values(shares).reduce((sum, val) => sum + parseFloat(val || 0), 0);
 
   return (
