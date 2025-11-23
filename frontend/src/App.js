@@ -1474,29 +1474,13 @@ function PartnersManagement() {
 
     setLoading(true);
     try {
-      // Create partner via investment endpoint
-      const partnerId = `partner_${Date.now()}`;
-      await axios.post(`${BACKEND_URL}/api/investments`, {
-        date: new Date().toISOString().split('T')[0],
-        partner_id: partnerId,
-        partner_name: newPartnerName,
-        amount_inr: parseFloat(newPartnerCapital),
-        description: 'Initial investment'
+      // Create new partner with initial investment
+      await axios.post(`${BACKEND_URL}/api/partners`, {
+        name: newPartnerName,
+        capital_invested: parseFloat(newPartnerCapital),
+        share_percentage: parseFloat(newPartnerShare),
+        date: new Date().toISOString().split('T')[0]
       }, { withCredentials: true });
-
-      // Update shares including the new partner
-      const newShares = [...Object.keys(shares).map(pid => ({
-        partner_id: pid,
-        share_percentage: parseFloat(shares[pid])
-      })), {
-        partner_id: partnerId,
-        share_percentage: parseFloat(newPartnerShare)
-      }];
-
-      await axios.put(`${BACKEND_URL}/api/partners/shares`, 
-        { shares: newShares },
-        { withCredentials: true }
-      );
 
       setToast({ message: 'New Partner Added Successfully!', type: 'success' });
       setShowNewPartnerModal(false);
