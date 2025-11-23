@@ -181,6 +181,8 @@ async def api_root():
 @app.get("/api/auth/google")
 async def google_login(request: Request):
     # Always use APP_URL for consistent redirect
+    print(f"🔐 APP_URL from env: {os.getenv('APP_URL')}")
+    print(f"🔐 APP_URL variable: {APP_URL}")
     redirect_url = f"{APP_URL}/dashboard"
     auth_url = f"https://auth.emergentagent.com/?redirect={redirect_url}"
     print(f"🔐 OAuth redirect URL: {redirect_url}")
