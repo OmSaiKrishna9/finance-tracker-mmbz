@@ -190,7 +190,7 @@ async def google_login(request: Request):
     return {"auth_url": auth_url}
 
 @app.post("/api/auth/session")
-async def create_session(session_id: str = Header(..., alias="X-Session-ID"), response: Response = None):
+async def create_session(session_id: str = Header(..., alias="X-Session-ID")):
     # Get session data from Emergent auth
     async with httpx.AsyncClient() as client:
         try:
@@ -250,7 +250,7 @@ async def create_session(session_id: str = Header(..., alias="X-Session-ID"), re
         "created_at": datetime.now(timezone.utc)
     })
     
-    # Set cookie
+    # Set cookie and return response
     response = Response(content='{"status": "success"}', media_type="application/json")
     response.set_cookie(
         key="session_token",
@@ -261,6 +261,8 @@ async def create_session(session_id: str = Header(..., alias="X-Session-ID"), re
         max_age=7*24*60*60,
         path="/"
     )
+    
+    return response
     
 
 
