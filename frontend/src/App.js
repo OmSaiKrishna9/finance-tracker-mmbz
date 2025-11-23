@@ -1199,32 +1199,69 @@ function TransactionHistory() {
 
                 {editType === 'expense' && (
                   <>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                      <input
-                        type="date"
-                        value={editingItem.date}
-                        onChange={(e) => handleEditChange('date', e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Amount (INR)</label>
-                      <input
-                        type="number"
-                        value={editingItem.amount_inr}
-                        onChange={(e) => handleEditChange('amount_inr', parseFloat(e.target.value))}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                      <textarea
-                        value={editingItem.description || ''}
-                        onChange={(e) => handleEditChange('description', e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                        rows="3"
-                      />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+                        <input
+                          type="date"
+                          value={editingItem.date}
+                          onChange={(e) => handleEditChange('date', e.target.value)}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Expense Type *</label>
+                        <input
+                          type="text"
+                          value={editingItem.expense_type}
+                          onChange={(e) => handleEditChange('expense_type', e.target.value)}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Amount (INR) *</label>
+                        <input
+                          type="number"
+                          value={editingItem.amount_inr}
+                          onChange={(e) => handleEditChange('amount_inr', parseFloat(e.target.value))}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Paid By *</label>
+                        <input
+                          type="text"
+                          value={editingItem.paid_by}
+                          onChange={(e) => handleEditChange('paid_by', e.target.value)}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Payment Mode *</label>
+                        <select
+                          value={editingItem.payment_mode}
+                          onChange={(e) => handleEditChange('payment_mode', e.target.value)}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                        >
+                          <option value="Cash">Cash</option>
+                          <option value="UPI">UPI</option>
+                          <option value="Online">Online</option>
+                        </select>
+                      </div>
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea
+                          value={editingItem.description || ''}
+                          onChange={(e) => handleEditChange('description', e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                          rows="3"
+                        />
+                      </div>
                     </div>
                   </>
                 )}
