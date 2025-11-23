@@ -1208,14 +1208,23 @@ function PartnersManagement() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partner Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Share Percentage</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capital Invested</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Share %</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {partners.map((partner) => (
                 <tr key={partner.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{partner.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-semibold">
+                    {new Intl.NumberFormat('en-IN', {
+                      style: 'currency',
+                      currency: 'INR',
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    }).format(partner.capital_invested || 0)}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {editMode ? (
                       <input
@@ -1227,11 +1236,26 @@ function PartnersManagement() {
                         data-testid={`share-input-${partner.name}`}
                       />
                     ) : (
-                      <span className="font-semibold">{partner.share_percentage}%</span>
+                      <span className="font-semibold">{partner.share_percentage.toFixed(2)}</span>
                     )}
                   </td>
                 </tr>
               ))}
+              {/* Total Row */}
+              <tr className="bg-gray-100 font-bold">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Total</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">
+                  {new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  }).format(partners.reduce((sum, p) => sum + (p.capital_invested || 0), 0))}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {partners.reduce((sum, p) => sum + p.share_percentage, 0).toFixed(2)}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
