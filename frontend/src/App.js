@@ -252,7 +252,7 @@ function RecordTransaction({ user }) {
     }
   };
 
-  const handleSaleSubmit = async (e) => {
+  const handleSaleSubmit = async (e, addNext = false) => {
     e.preventDefault();
     setLoading(true);
     
@@ -272,11 +272,14 @@ function RecordTransaction({ user }) {
 
     try {
       await axios.post(`${BACKEND_URL}/api/sales`, data, { withCredentials: true });
-      alert('Sale recorded successfully!');
+      setToast({ message: 'Sale Added Successfully!', type: 'success' });
       e.target.reset();
+      if (!addNext) {
+        // Wait a bit before clearing form if not adding next
+      }
     } catch (error) {
       console.error('Error recording sale:', error);
-      alert('Failed to record sale');
+      setToast({ message: 'Failed to record sale', type: 'error' });
     } finally {
       setLoading(false);
     }
