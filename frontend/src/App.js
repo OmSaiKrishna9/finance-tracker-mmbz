@@ -2045,14 +2045,18 @@ function AppLayout({ user, onLogout, children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navigation = [
+  const isEmployee = user?.role === 'EMPLOYEE';
+  
+  const allNavigation = [
     { name: 'Dashboard', path: '/dashboard', icon: '📊' },
     { name: 'Record Transaction', path: '/record-transaction', icon: '➕' },
     { name: 'History', path: '/history', icon: '📝' },
-    { name: 'Reports', path: '/reports', icon: '📈' },
-    { name: 'Partners', path: '/partners', icon: '👥' },
-    { name: 'Admin', path: '/admin', icon: '⚙️' },
+    { name: 'Reports', path: '/reports', icon: '📈', hideForEmployee: true },
+    { name: 'Partners', path: '/partners', icon: '👥', hideForEmployee: true },
+    { name: 'Admin', path: '/admin', icon: '⚙️', hideForEmployee: true },
   ];
+  
+  const navigation = allNavigation.filter(item => !(isEmployee && item.hideForEmployee));
 
   return (
     <div className="min-h-screen bg-gray-50">
