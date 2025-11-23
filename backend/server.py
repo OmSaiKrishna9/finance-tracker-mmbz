@@ -514,6 +514,25 @@ async def get_investments(request: Request):
         investment["_id"] = str(investment["_id"])
     return investments
 
+
+@app.put("/api/investments/{investment_id}")
+async def update_investment(investment_id: str, investment_data: dict, request: Request):
+    await get_current_user(request)
+    
+    update_data = {
+        "date": investment_data["date"],
+        "amount_inr": investment_data["amount_inr"],
+        "description": investment_data.get("description"),
+    }
+    
+    result = investments_collection.update_one({"id": investment_id}, {"$set": update_data})
+    
+    if result.modified_count > 0:
+        return {"status": "success", "message": "Investment updated"}
+    else:
+        raise HTTPException(status_code=404, detail="Investment not found")
+
+
 # Partners endpoints
 @app.get("/api/partners")
 async def get_partners(request: Request):
