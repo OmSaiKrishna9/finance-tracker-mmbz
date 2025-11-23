@@ -155,6 +155,10 @@ async def get_current_user(request: Request):
 async def root():
     return {"message": "Finance Tracker API", "status": "running"}
 
+@app.get("/api")
+async def api_root():
+    return {"message": "Finance Tracker API", "status": "running", "version": "1.0"}
+
 # Auth endpoints
 @app.get("/api/auth/google")
 async def google_login():
