@@ -14,10 +14,13 @@ load_dotenv()
 
 app = FastAPI()
 
+# Get APP_URL from environment
+APP_URL = os.getenv("APP_URL", "http://localhost:3000")
+
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:8001"],
+    allow_origins=[APP_URL, "http://localhost:3000", "http://localhost:8001", "https://57f0d7b9-60a6-4841-8f64-72b3f826be5a.preview.emergentagent.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
