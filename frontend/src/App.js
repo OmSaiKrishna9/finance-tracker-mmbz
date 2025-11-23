@@ -751,27 +751,14 @@ function RecordTransaction({ user }) {
                     ></textarea>
                   </div>
                 </div>
-                <div className="flex gap-3">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50"
-                    data-testid="payback-submit-button"
-                  >
-                    {loading ? 'Recording...' : 'Record Pay-Back'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      const form = e.target.closest('form');
-                      handlePartnerPaymentSubmit({ preventDefault: () => {}, target: form }, true);
-                    }}
-                    disabled={loading}
-                    className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50 whitespace-nowrap"
-                  >
-                    Add Next
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50"
+                  data-testid="payback-submit-button"
+                >
+                  {loading ? 'Recording...' : 'Record Pay-Back'}
+                </button>
               </form>
             )}
 
