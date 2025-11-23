@@ -311,7 +311,7 @@ function RecordTransaction({ user }) {
     }
   };
 
-  const handlePartnerPaymentSubmit = async (e) => {
+  const handlePartnerPaymentSubmit = async (e, addNext = false) => {
     e.preventDefault();
     setLoading(true);
     
@@ -331,11 +331,11 @@ function RecordTransaction({ user }) {
 
     try {
       await axios.post(`${BACKEND_URL}/api/partner-payments`, data, { withCredentials: true });
-      alert('Partner payment recorded successfully!');
+      setToast({ message: 'Partner Payment Added Successfully!', type: 'success' });
       e.target.reset();
     } catch (error) {
       console.error('Error recording partner payment:', error);
-      alert('Failed to record partner payment');
+      setToast({ message: 'Failed to record partner payment', type: 'error' });
     } finally {
       setLoading(false);
     }
