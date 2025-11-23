@@ -342,6 +342,32 @@ async def get_sales(request: Request):
         sale["_id"] = str(sale["_id"])
     return sales
 
+
+@app.put("/api/sales/{sale_id}")
+async def update_sale(sale_id: str, sale_data: dict, request: Request):
+    await get_current_user(request)
+    
+    update_data = {
+        "date": sale_data["date"],
+        "shoot_type": sale_data["shoot_type"],
+        "total_time_hrs": sale_data["total_time_hrs"],
+        "total_amount_inr": sale_data["total_amount_inr"],
+        "received_by": sale_data["received_by"],
+        "payment_mode": sale_data["payment_mode"],
+        "cameraman": sale_data.get("cameraman"),
+        "cameraman_mobile": sale_data.get("cameraman_mobile"),
+        "customer_name": sale_data.get("customer_name"),
+        "city": sale_data.get("city"),
+    }
+    
+    result = sales_collection.update_one({"id": sale_id}, {"$set": update_data})
+    
+    if result.modified_count > 0:
+        return {"status": "success", "message": "Sale updated"}
+    else:
+        raise HTTPException(status_code=404, detail="Sale not found")
+
+
 # Expenses endpoints
 @app.post("/api/expenses")
 async def create_expense(expense_data: dict, request: Request):
