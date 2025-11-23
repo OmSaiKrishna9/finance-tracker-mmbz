@@ -2200,6 +2200,11 @@ function App() {
                 <PartnersManagement />
               </AppLayout>
             } />
+            <Route path="/admin" element={
+              <AppLayout user={user} onLogout={handleLogout}>
+                <AdminUserManagement />
+              </AppLayout>
+            } />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </>
         )}
