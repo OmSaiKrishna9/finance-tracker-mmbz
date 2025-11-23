@@ -543,6 +543,38 @@ async def get_partners(request: Request):
         partner["_id"] = str(partner["_id"])
     return partners
 
+
+
+@app.post("/api/partners")
+async def create_partner(partner_data: dict, request: Request):
+    await get_current_user(request)
+    
+    partner_id = str(uuid.uuid4())
+    partner = {
+        "id": partner_id,
+        "name": partner_data["name"],
+        "share_percentage": partner_data.get("share_percentage", 0.0),
+        "capital_invested": partner_data.get("capital_invested", 0.0),
+        "created_at": datetime.now(timezone.utc)
+    }
+    
+    partners_collection.insert_one(partner)
+    
+    # If initial investment provided, create investment record
+    if partner_data.get("capital_invested", 0) > 0:
+        investment = {
+            "id": str(uuid.uuid4()),
+            "date": partner_data.get("date", datetime.now(timezone.utc).strftime("%Y-%m-%d")),
+            "partner_id": partner_id,
+            "partner_name": partner_data["name"],
+            "amount_inr": partner_data["capital_invested"],
+            "description": "Initial investment",
+            "created_at": datetime.now(timezone.utc)
+        }
+        investments_collection.insert_one(investment)
+    
+    return {"status": "success", "partner_id": partner_id, "message": "Partner added successfully"}
+
 @app.put("/api/partners/shares")
 async def update_partner_shares(shares_data: UpdateSharesRequest, request: Request):
     await get_current_user(request)
