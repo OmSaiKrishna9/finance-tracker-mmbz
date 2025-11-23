@@ -341,29 +341,48 @@ function RecordTransaction({ user }) {
     }
   };
 
-  const handleInvestmentSubmit = async (e) => {
+  const handleInvestmentSubmit = async (e, addNext = false) => {
     e.preventDefault();
     setLoading(true);
     
     const formData = new FormData(e.target);
-    const partnerId = formData.get('partner_id');
-    const partner = partners.find(p => p.id === partnerId);
+    const partnerIdOrNew = formData.get('partner_id');
+    
+    let partnerId, partnerName;
+    
+    if (partnerIdOrNew === 'new_partner') {
+      // Create new partner first
+      const newPartnerNameValue = formData.get('new_partner_name');
+      if (!newPartnerNameValue) {
+        setToast({ message: 'Please enter partner name', type: 'error' });
+        setLoading(false);
+        return;
+      }
+      
+      partnerId = `partner_${Date.now()}`;
+      partnerName = newPartnerNameValue;
+    } else {
+      partnerId = partnerIdOrNew;
+      const partner = partners.find(p => p.id === partnerId);
+      partnerName = partner?.name || '';
+    }
     
     const data = {
       date: formData.get('date'),
       partner_id: partnerId,
-      partner_name: partner?.name || '',
+      partner_name: partnerName,
       amount_inr: parseFloat(formData.get('amount_inr')),
       description: formData.get('description')
     };
 
     try {
       await axios.post(`${BACKEND_URL}/api/investments`, data, { withCredentials: true });
-      alert('Investment recorded! Please update partner shares in the Partners section.');
+      setToast({ message: 'Investment Added Successfully! Update partner shares in Partners section.', type: 'success' });
       e.target.reset();
+      fetchPartners(); // Refresh partners list
     } catch (error) {
       console.error('Error recording investment:', error);
-      alert('Failed to record investment');
+      setToast({ message: 'Failed to record investment', type: 'error' });
     } finally {
       setLoading(false);
     }
