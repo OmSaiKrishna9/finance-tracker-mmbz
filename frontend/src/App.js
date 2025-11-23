@@ -1628,6 +1628,76 @@ function PartnersManagement() {
           </div>
         )}
       </div>
+
+      {/* New Partner Modal */}
+      {showNewPartnerModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Add New Partner</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Partner Name *</label>
+                  <input
+                    type="text"
+                    value={newPartnerName}
+                    onChange={(e) => setNewPartnerName(e.target.value)}
+                    placeholder="Enter partner name"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Initial Capital (INR) *</label>
+                  <input
+                    type="number"
+                    value={newPartnerCapital}
+                    onChange={(e) => setNewPartnerCapital(e.target.value)}
+                    placeholder="0"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Share Percentage *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newPartnerShare}
+                    onChange={(e) => setNewPartnerShare(e.target.value)}
+                    placeholder="0.00"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">Note: Adjust existing partner shares to maintain 100% total</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={handleAddNewPartner}
+                  disabled={loading}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50"
+                >
+                  {loading ? 'Adding...' : 'Add Partner'}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowNewPartnerModal(false);
+                    setNewPartnerName('');
+                    setNewPartnerCapital('');
+                    setNewPartnerShare('');
+                  }}
+                  disabled={loading}
+                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 }
