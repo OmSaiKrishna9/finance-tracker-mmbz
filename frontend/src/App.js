@@ -949,37 +949,30 @@ function TransactionHistory() {
 
 // Reports Page
 function Reports() {
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState('');
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Set default to last month
-    const today = new Date();
-    const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    const monthStr = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, '0')}`;
-    setSelectedMonth(monthStr);
-    fetchReport(monthStr);
-  }, []);
+    fetchReport();
+  }, [selectedYear, selectedMonth]);
 
-  const fetchReport = async (month) => {
+  const fetchReport = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/reports/monthly?month=${month}`, {
-        withCredentials: true
-      });
+      const monthNum = selectedMonth ? parseInt(selectedMonth) : null;
+      const url = monthNum 
+        ? `${BACKEND_URL}/api/reports/yearly?year=${selectedYear}&month=${monthNum}`
+        : `${BACKEND_URL}/api/reports/yearly?year=${selectedYear}`;
+      
+      const response = await axios.get(url, { withCredentials: true });
       setReport(response.data);
     } catch (error) {
       console.error('Error fetching report:', error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleMonthChange = (e) => {
-    const month = e.target.value;
-    setSelectedMonth(month);
-    fetchReport(month);
   };
 
   const formatCurrency = (amount) => {
@@ -990,18 +983,57 @@ function Reports() {
     }).format(amount);
   };
 
+  const getMonthName = (monthStr) => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthNum = parseInt(monthStr.split('-')[1]);
+    return months[monthNum - 1];
+  };
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({length: 5}, (_, i) => currentYear - i);
+  const months = [
+    { value: '', label: 'All Months' },
+    { value: '1', label: 'January' },
+    { value: '2', label: 'February' },
+    { value: '3', label: 'March' },
+    { value: '4', label: 'April' },
+    { value: '5', label: 'May' },
+    { value: '6', label: 'June' },
+    { value: '7', label: 'July' },
+    { value: '8', label: 'August' },
+    { value: '9', label: 'September' },
+    { value: '10', label: 'October' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'December' }
+  ];
+
   return (
     <div className="space-y-6" data-testid="reports-page">
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Monthly Reports</h2>
-          <input
-            type="month"
-            value={selectedMonth}
-            onChange={handleMonthChange}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            data-testid="month-selector"
-          />
+          <h2 className="text-2xl font-bold text-gray-800">Financial Reports</h2>
+          <div className="flex gap-3">
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              data-testid="year-selector"
+            >
+              {years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              data-testid="month-selector"
+            >
+              {months.map(month => (
+                <option key={month.value} value={month.value}>{month.label}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {loading ? (
@@ -1010,42 +1042,57 @@ function Reports() {
           </div>
         ) : report ? (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-500">
-                <p className="text-green-600 text-sm font-medium mb-2">Total Revenue</p>
-                <p className="text-3xl font-bold text-green-700">{formatCurrency(report.revenue)}</p>
-                <p className="text-sm text-green-600 mt-2">{report.sales_count} sales</p>
-              </div>
-              
-              <div className="bg-red-50 rounded-lg p-6 border-l-4 border-red-500">
-                <p className="text-red-600 text-sm font-medium mb-2">Total Expenses</p>
-                <p className="text-3xl font-bold text-red-700">{formatCurrency(report.expenses)}</p>
-                <p className="text-sm text-red-600 mt-2">{report.expenses_count} expenses</p>
-              </div>
-              
-              <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
-                <p className="text-blue-600 text-sm font-medium mb-2">Net Profit</p>
-                <p className="text-3xl font-bold text-blue-700">{formatCurrency(report.profit)}</p>
-              </div>
-            </div>
-
+            {/* Monthly Financial Data Table */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">Partner Distribution</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                {selectedMonth ? `${months[parseInt(selectedMonth)].label} ${selectedYear}` : `Year ${selectedYear}`} - Financial Summary
+              </h3>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partner</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Share %</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expenses</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {report.partner_distribution.map((partner, idx) => (
+                    {report.monthly_data.map((data, idx) => (
                       <tr key={idx} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{partner.name}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{partner.share_percentage}%</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">{formatCurrency(partner.amount)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{getMonthName(data.month)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">{formatCurrency(data.revenue)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">{formatCurrency(data.expenses)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-semibold">{formatCurrency(data.profit)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Partner Payback Table */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Partner Payback Summary</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partner Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Share</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Paid</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Due</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {report.partner_summary.map((partner, idx) => (
+                      <tr key={idx} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{partner.partner_name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-semibold">{formatCurrency(partner.total_share)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">{formatCurrency(partner.total_paid)}</td>
+                        <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold ${partner.total_due >= 0 ? 'text-orange-600' : 'text-red-600'}`}>
+                          {formatCurrency(partner.total_due)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -1054,7 +1101,7 @@ function Reports() {
             </div>
           </div>
         ) : (
-          <div className="text-center py-12 text-gray-500">No data available for selected month</div>
+          <div className="text-center py-12 text-gray-500">No data available</div>
         )}
       </div>
     </div>
