@@ -419,6 +419,27 @@ async def get_expenses(request: Request):
     return expenses
 
 # Partner Payments endpoints
+
+
+@app.put("/api/partner-payments/{payment_id}")
+async def update_partner_payment(payment_id: str, payment_data: dict, request: Request):
+    await get_current_user(request)
+    
+    update_data = {
+        "date": payment_data["date"],
+        "amount_inr": payment_data["amount_inr"],
+        "month_year": payment_data["month_year"],
+        "payment_mode": payment_data["payment_mode"],
+        "description": payment_data.get("description"),
+    }
+    
+    result = partner_payments_collection.update_one({"id": payment_id}, {"$set": update_data})
+    
+    if result.modified_count > 0:
+        return {"status": "success", "message": "Partner payment updated"}
+    else:
+        raise HTTPException(status_code=404, detail="Partner payment not found")
+
 @app.post("/api/partner-payments")
 async def create_partner_payment(payment_data: dict, request: Request):
     await get_current_user(request)
