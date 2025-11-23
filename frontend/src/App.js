@@ -857,6 +857,9 @@ function TransactionHistory() {
   const [expenses, setExpenses] = useState([]);
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingItem, setEditingItem] = useState(null);
+  const [editType, setEditType] = useState(null);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     fetchAllTransactions();
