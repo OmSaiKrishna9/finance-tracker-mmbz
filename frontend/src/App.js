@@ -37,6 +37,19 @@ function Toast({ message, type = 'success', onClose }) {
 // Login Page
 function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved === 'true';
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -66,11 +79,22 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 max-w-md w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Finance Tracker</h1>
-          <p className="text-gray-600">Photography Studio Management</p>
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: darkMode ? 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' : 'linear-gradient(135deg, #dbeafe 0%, #c7d2fe 100%)' }}>
+      {/* Dark mode toggle */}
+      <button
+        onClick={() => setDarkMode(!darkMode)}
+        className="theme-toggle fixed top-4 right-4 z-50"
+        title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+      >
+        <div className={`theme-toggle-slider ${darkMode ? 'active' : ''}`}>
+          {darkMode ? '🌙' : '☀️'}
+        </div>
+      </button>
+
+      <div className="rounded-2xl shadow-xl p-6 sm:p-8 md:p-12 max-w-md w-full" style={{ backgroundColor: 'var(--card-bg)' }}>
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Finance Tracker</h1>
+          <p className="text-sm md:text-base" style={{ color: 'var(--text-secondary)' }}>Photography Studio Management</p>
         </div>
         
         <div className="space-y-4">
