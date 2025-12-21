@@ -15,7 +15,7 @@ load_dotenv()
 app = FastAPI()
 
 # Get APP_URL from environment - override with correct URL
-APP_URL = "https://partfintrack.preview.emergentagent.com"
+APP_URL = "https://photo-tracker-16.preview.emergentagent.com"
 
 # CORS configuration - Allow all preview.emergentagent.com domains
 app.add_middleware(
