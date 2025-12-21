@@ -198,7 +198,7 @@ function Dashboard({ user }) {
             </div>
             <div>
               <h3 className="text-base md:text-lg font-semibold">Transaction History</h3>
-              <p className="text-purple-100 text-sm">{isEmployee ? 'View expenses' : 'View all transactions'}</p>
+              <p className="text-purple-100 text-xs md:text-sm">{isEmployee ? 'View expenses' : 'View all transactions'}</p>
             </div>
           </div>
         </button>
@@ -206,18 +206,18 @@ function Dashboard({ user }) {
         {!isEmployee && (
           <button
             onClick={() => navigate('/reports')}
-            className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg p-6 hover:shadow-lg transition-all duration-200 text-left"
+            className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg p-4 md:p-6 hover:shadow-lg transition-all duration-200 text-left"
             data-testid="reports-button"
           >
-            <div className="flex items-center gap-4">
-              <div className="bg-white bg-opacity-20 rounded-full p-3">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="bg-white bg-opacity-20 rounded-full p-2 md:p-3">
+                <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-semibold">Reports</h3>
-                <p className="text-indigo-100 text-sm">Monthly breakdowns</p>
+                <h3 className="text-base md:text-lg font-semibold">Reports</h3>
+                <p className="text-indigo-100 text-xs md:text-sm">Monthly breakdowns</p>
               </div>
             </div>
           </button>
