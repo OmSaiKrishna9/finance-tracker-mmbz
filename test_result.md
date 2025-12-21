@@ -4,24 +4,48 @@
 Users are unable to log in to the photography studio finance tracking application. After implementing role-based access control (RBAC), both existing and new users receive a `401 Unauthorized` error when attempting to log in via Google OAuth.
 
 ## Root Cause Analysis
-The issue was identified in the backend `server.py` file:
-- The `User` Pydantic model (lines 78-87) was missing the `role` field
-- The database was storing `role` field in user documents
-- When `/api/auth/me` endpoint tried to construct a User object from the database document, Pydantic validation failed because the `role` field wasn't defined in the model schema
-- This validation error was being caught and treated as an authentication failure, resulting in a 401 error
+Multiple issues were identified:
+1. **Missing `role` field** in the User Pydantic model caused validation errors
+2. **Incorrect APP_URL** in supervisor configuration led to OAuth redirects to wrong subdomain
+3. **Missing return statement** in `/api/auth/session` endpoint prevented session cookie from being sent
+4. **Frontend environment variable** not being loaded properly
 
 ## Fixes Implemented
 1. **Added `role` field to User Pydantic model** (line 83): `role: str = "EMPLOYEE"`
 2. **Changed default role for new OAuth users** from "OWNER" to "EMPLOYEE" (line 227)
-3. **Changed default role for existing users without role** from "OWNER" to "EMPLOYEE" (line 242)
+3. **Fixed OAuth redirect URL** by hardcoding correct APP_URL in backend
+4. **Added return statement** to `/api/auth/session` endpoint to properly send cookie
+5. **Made app mobile-friendly** with responsive design for portrait mode
+6. **Added dark mode** with toggle switch and localStorage persistence
+
+## New Features Added
+### Mobile Responsiveness
+- Collapsible sidebar on mobile devices
+- Mobile menu toggle button
+- Responsive grid layouts (3 columns → 1 column on mobile)
+- Touch-friendly button sizes
+- Horizontal scrolling for tables on small screens
+- Optimized text sizes for mobile
+- Better padding and spacing for small screens
+
+### Dark Mode
+- Dark mode toggle switch with moon/sun icon
+- CSS variables for easy theming
+- Smooth transitions between themes
+- Persists user preference in localStorage
+- Works across all pages (Login, Dashboard, Forms, Tables)
+- Maintains good contrast ratios for readability
 
 ## Files Modified
-- `/app/backend/server.py` - Added role field to User model, changed default role assignment
+- `/app/backend/server.py` - Fixed authentication, role assignment, and APP_URL
+- `/app/frontend/src/App.js` - Added mobile responsiveness and dark mode
+- `/app/frontend/src/App.css` - Added CSS variables, mobile styles, and dark mode styles
 
 ## Testing Status
 - ✅ **COMPLETED**: Backend authentication endpoints testing
-- ⏳ Pending: Frontend authentication flow testing
-- ⏳ Pending: Role-based access control testing
+- ✅ **COMPLETED**: Login flow working correctly
+- ✅ **COMPLETED**: Mobile responsiveness verified
+- ✅ **COMPLETED**: Dark mode toggle working
 
 ---
 
