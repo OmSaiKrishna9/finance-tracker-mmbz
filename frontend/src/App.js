@@ -2128,7 +2128,7 @@ function AppLayout({ user, onLogout, children }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center ml-12 md:ml-0">
-              <h1 className="text-lg md:text-xl font-bold text-blue-600">Finance Tracker</h1>
+              <h1 className="text-lg md:text-xl font-bold text-blue-600">Partner Finance Tracker</h1>
             </div>
             <div className="flex items-center gap-2 md:gap-4">
               {/* Dark mode toggle */}
