@@ -2053,6 +2053,20 @@ function AdminUserManagement() {
 function AppLayout({ user, onLogout, children }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved === 'true';
+  });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
 
   const isEmployee = user?.role === 'EMPLOYEE';
   
@@ -2067,19 +2081,48 @@ function AppLayout({ user, onLogout, children }) {
   
   const navigation = allNavigation.filter(item => !(isEmployee && item.hideForEmployee));
 
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-md">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+      {/* Mobile menu button */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="mobile-menu-toggle md:hidden"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* Mobile sidebar overlay */}
+      {mobileMenuOpen && (
+        <div className="mobile-sidebar-overlay md:hidden" onClick={closeMobileMenu}></div>
+      )}
+
+      <nav style={{ backgroundColor: 'var(--card-bg)', boxShadow: 'var(--shadow)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold text-blue-600">Finance Tracker</h1>
+            <div className="flex items-center ml-12 md:ml-0">
+              <h1 className="text-lg md:text-xl font-bold text-blue-600">Finance Tracker</h1>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Hi, {user?.name}</span>
+            <div className="flex items-center gap-2 md:gap-4">
+              {/* Dark mode toggle */}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="theme-toggle"
+                title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                <div className={`theme-toggle-slider ${darkMode ? 'active' : ''}`}>
+                  {darkMode ? '🌙' : '☀️'}
+                </div>
+              </button>
+              <span className="text-xs md:text-sm hidden sm:inline" style={{ color: 'var(--text-secondary)' }}>
+                Hi, {user?.name}
+              </span>
               <button
                 onClick={onLogout}
-                className="text-sm text-red-600 hover:text-red-700 font-medium"
+                className="text-xs md:text-sm text-red-600 hover:text-red-700 font-medium"
                 data-testid="logout-button"
               >
                 Logout
@@ -2089,29 +2132,41 @@ function AppLayout({ user, onLogout, children }) {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-6">
-          <aside className="w-64 bg-white rounded-lg shadow-md p-4 h-fit sticky top-8">
-            <nav className="space-y-2">
-              {navigation.map((item) => (
-                <button
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    location.pathname === item.path
-                      ? 'bg-blue-50 text-blue-600 font-medium'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                  data-testid={`nav-${item.name.toLowerCase().replace(' ', '-')}`}
-                >
-                  <span>{item.icon}</span>
-                  <span>{item.name}</span>
-                </button>
-              ))}
-            </nav>
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 md:py-8">
+        <div className="flex gap-2 md:gap-6">
+          {/* Desktop sidebar */}
+          <aside 
+            className={`fixed md:static inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out ${
+              mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+            } mt-16 md:mt-0`}
+            style={{ backgroundColor: 'var(--card-bg)', boxShadow: 'var(--shadow)' }}
+          >
+            <div className="h-full md:h-fit md:rounded-lg p-4 md:sticky md:top-8 overflow-y-auto">
+              <nav className="space-y-2">
+                {navigation.map((item) => (
+                  <button
+                    key={item.path}
+                    onClick={() => {
+                      navigate(item.path);
+                      closeMobileMenu();
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                      location.pathname === item.path
+                        ? 'bg-blue-50 text-blue-600 font-medium dark:bg-blue-900 dark:text-blue-300'
+                        : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                    style={{ color: location.pathname === item.path ? '' : 'var(--text-secondary)' }}
+                    data-testid={`nav-${item.name.toLowerCase().replace(' ', '-')}`}
+                  >
+                    <span>{item.icon}</span>
+                    <span>{item.name}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
           </aside>
 
-          <main className="flex-1">
+          <main className="flex-1 w-full md:w-auto overflow-x-hidden">
             {children}
           </main>
         </div>
