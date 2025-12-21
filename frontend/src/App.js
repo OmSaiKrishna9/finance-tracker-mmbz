@@ -93,7 +93,7 @@ function LoginPage() {
 
       <div className="rounded-2xl shadow-xl p-6 sm:p-8 md:p-12 max-w-md w-full" style={{ backgroundColor: 'var(--card-bg)' }}>
         <div className="text-center mb-6 md:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Finance Tracker</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Partner Finance Tracker</h1>
           <p className="text-sm md:text-base" style={{ color: 'var(--text-secondary)' }}>Photography Studio Management</p>
         </div>
         
