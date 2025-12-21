@@ -142,25 +142,25 @@ function Dashboard({ user }) {
   const isEmployee = user?.role === 'EMPLOYEE';
 
   return (
-    <div className="space-y-6" data-testid="dashboard">
+    <div className="space-y-4 md:space-y-6" data-testid="dashboard">
       {!isEmployee && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Last Month Overview</h2>
+        <div className="rounded-lg shadow-md p-4 md:p-6" style={{ backgroundColor: 'var(--card-bg)' }}>
+          <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6" style={{ color: 'var(--text-primary)' }}>Last Month Overview</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-green-50 rounded-lg p-6 border-l-4 border-green-500" data-testid="revenue-card">
-              <p className="text-green-600 text-sm font-medium mb-2">Revenue</p>
-              <p className="text-3xl font-bold text-green-700">{formatCurrency(stats?.revenue || 0)}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="bg-green-50 dark:bg-green-900 dark:bg-opacity-20 rounded-lg p-4 md:p-6 border-l-4 border-green-500" data-testid="revenue-card">
+              <p className="text-green-600 dark:text-green-400 text-sm font-medium mb-2">Revenue</p>
+              <p className="text-2xl md:text-3xl font-bold text-green-700 dark:text-green-400">{formatCurrency(stats?.revenue || 0)}</p>
             </div>
             
-            <div className="bg-red-50 rounded-lg p-6 border-l-4 border-red-500" data-testid="expenses-card">
-              <p className="text-red-600 text-sm font-medium mb-2">Expenses</p>
-              <p className="text-3xl font-bold text-red-700">{formatCurrency(stats?.expenses || 0)}</p>
+            <div className="bg-red-50 dark:bg-red-900 dark:bg-opacity-20 rounded-lg p-4 md:p-6 border-l-4 border-red-500" data-testid="expenses-card">
+              <p className="text-red-600 dark:text-red-400 text-sm font-medium mb-2">Expenses</p>
+              <p className="text-2xl md:text-3xl font-bold text-red-700 dark:text-red-400">{formatCurrency(stats?.expenses || 0)}</p>
             </div>
             
-            <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500" data-testid="profit-card">
-              <p className="text-blue-600 text-sm font-medium mb-2">Profit</p>
-              <p className="text-3xl font-bold text-blue-700">{formatCurrency(stats?.profit || 0)}</p>
+            <div className="bg-blue-50 dark:bg-blue-900 dark:bg-opacity-20 rounded-lg p-4 md:p-6 border-l-4 border-blue-500" data-testid="profit-card">
+              <p className="text-blue-600 dark:text-blue-400 text-sm font-medium mb-2">Profit</p>
+              <p className="text-2xl md:text-3xl font-bold text-blue-700 dark:text-blue-400">{formatCurrency(stats?.profit || 0)}</p>
             </div>
           </div>
         </div>
@@ -169,35 +169,35 @@ function Dashboard({ user }) {
       <div className={`grid grid-cols-1 ${isEmployee ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
         <button
           onClick={() => navigate('/record-transaction')}
-          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6 hover:shadow-lg transition-all duration-200 text-left"
+          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-4 md:p-6 hover:shadow-lg transition-all duration-200 text-left"
           data-testid="record-transaction-button"
         >
-          <div className="flex items-center gap-4">
-            <div className="bg-white bg-opacity-20 rounded-full p-3">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="bg-white bg-opacity-20 rounded-full p-2 md:p-3">
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </div>
             <div>
-              <h3 className="text-lg font-semibold">Record Transaction</h3>
-              <p className="text-blue-100 text-sm">{isEmployee ? 'Add expense' : 'Add sale, expense, or investment'}</p>
+              <h3 className="text-base md:text-lg font-semibold">Record Transaction</h3>
+              <p className="text-blue-100 text-xs md:text-sm">{isEmployee ? 'Add expense' : 'Add sale, expense, or investment'}</p>
             </div>
           </div>
         </button>
 
         <button
           onClick={() => navigate('/history')}
-          className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-6 hover:shadow-lg transition-all duration-200 text-left"
+          className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-4 md:p-6 hover:shadow-lg transition-all duration-200 text-left"
           data-testid="transaction-history-button"
         >
-          <div className="flex items-center gap-4">
-            <div className="bg-white bg-opacity-20 rounded-full p-3">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="bg-white bg-opacity-20 rounded-full p-2 md:p-3">
+              <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
             <div>
-              <h3 className="text-lg font-semibold">Transaction History</h3>
+              <h3 className="text-base md:text-lg font-semibold">Transaction History</h3>
               <p className="text-purple-100 text-sm">{isEmployee ? 'View expenses' : 'View all transactions'}</p>
             </div>
           </div>
